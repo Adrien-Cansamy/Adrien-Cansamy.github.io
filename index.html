@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adrien Cansamy - Portfolio | Futur Ingénieur IA</title>
+    <style>
+        /* ==========================================================================
+           VARIABLES & THÈME MAUVE GALACTIQUE / SAINTS ROW / ARROW
+           ========================================================================== */
+        :root {
+            --bg-dark: #080312;
+            --bg-card: rgba(22, 11, 41, 0.75);
+            --bg-card-hover: rgba(38, 18, 70, 0.85);
+            
+            --purple-saints: #a855f7;
+            --purple-glow: #c084fc;
+            --purple-accent: #d8b4fe;
+            
+            --arrow-green: #10b981;
+            --arrow-green-glow: #34d399;
+            
+            --text-main: #f3e8ff;
+            --text-muted: #a78bfa;
+            
+            --border-purple: rgba(168, 85, 247, 0.3);
+            --border-glow: rgba(168, 85, 247, 0.8);
+            
+            --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --font-mono: 'Consolas', 'Courier New', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Canvas de fond pour les flèches galactiques défilantes */
+        #arrow-space-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Overlay nébuleuse */
+        .galaxy-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(168, 85, 247, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(88, 28, 135, 0.2) 0%, transparent 60%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* EN-TÊTE / NAVIGATION */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(8, 3, 18, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-purple);
+            box-shadow: 0 4px 20px rgba(168, 85, 247, 0.2);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--purple-saints);
+            text-shadow: 0 0 10px var(--purple-saints);
+        }
+
+        .logo-arrow {
+            color: var(--arrow-green);
+            text-shadow: 0 0 10px var(--arrow-green);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            color: var(--arrow-green);
+            text-shadow: 0 0 8px var(--arrow-green);
+        }
+
+        .nav-btn.active::after {
+            content: '➤';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-90deg);
+            font-size: 0.6rem;
+            color: var(--arrow-green);
+        }
+
+        /* SECTIONS / LAYOUT */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: calc(100vh - 160px);
+        }
+
+        .page-section {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            margin-bottom: 2rem;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-left: 4px solid var(--purple-saints);
+            padding-left: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: -5px 0 15px rgba(168, 85, 247, 0.4);
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border-purple), transparent);
+        }
+
+        /* CARD STYLE */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-purple);
+            border-radius: 8px;
+            padding: 1.5rem;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--purple-saints), transparent);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--purple-glow);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.3);
+        }
+
+        .card:hover::before {
+            background: linear-gradient(90deg, transparent, var(--arrow-green), transparent);
+        }
+
+        /* PAGE PRESENTATION (HOME) */
+        .hero-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-size: 3rem;
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .hero-text h1 span {
+            color: var(--purple-saints);
+            text-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--arrow-green);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        .hero-bio {
+            font-size: 1.05rem;
+            color: var(--text-main);
+            margin-bottom: 2rem;
+        }
+
+        .badge-target {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid var(--arrow-green);
+            color: var(--arrow-green-glow);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--purple-saints), #7e22ce);
+            color: #fff;
+            padding: 0.8rem 1.8rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #be185d, var(--purple-saints));
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.8);
+            transform: scale(1.03);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-main);
+            padding: 0.8rem 1.8rem;
+            border: 1px solid var(--border-purple);
+            border-radius: 4px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--arrow-green);
+            color: var(--arrow-green);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+        }
+
+        /* HUD STATS BOX */
+        .hud-card {
+            background: rgba(10, 5, 25, 0.8);
+            border: 1px solid var(--purple-saints);
+            border-radius: 8px;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .hud-card::after {
+            content: 'SYS.ONLINE';
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--arrow-green);
+        }
+
+        .hud-item {
+            margin-bottom: 1.2rem;
+        }
+
+        .hud-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .hud-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .hud-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        /* TIMELINE PARCOURS */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin-top: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--purple-saints), var(--arrow-green));
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '➤';
+            position: absolute;
+            left: -2rem;
+            top: 2px;
+            width: 16px;
+            height: 16px;
+            color: var(--arrow-green);
+            font-size: 0.9rem;
+        }
+
+        .timeline-date {
+            font-family: var(--font-mono);
+            color: var(--arrow-green);
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .timeline-title {
+            font-size: 1.2rem;
+            color: #fff;
+            margin: 0.2rem 0;
+        }
+
+        .timeline-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* COMPÉTENCES & OUTILS */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .skill-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid var(--border-purple);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--purple-saints), var(--arrow-green));
+            border-radius: 4px;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .tool-card {
+            background: rgba(15, 8, 30, 0.6);
+            border: 1px solid var(--border-purple);
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .tool-card:hover {
+            border-color: var(--arrow-green);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .tool-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        /* PROJETS & VEILLE */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .project-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            background: rgba(168, 85, 247, 0.2);
+            color: var(--purple-accent);
+            padding: 0.2rem 0.6rem;
+            border-radius: 3px;
+            margin-right: 0.4rem;
+            margin-top: 0.5rem;
+            border: 1px solid var(--border-purple);
+        }
+
+        .veille-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .veille-num {
+            font-family: var(--font-mono);
+            color: var(--arrow-green);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* CONTACT */
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 2rem;
+        }
+
+        .contact-info-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(168, 85, 247, 0.15);
+            border: 1px solid var(--purple-saints);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--purple-glow);
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(10, 5, 25, 0.7);
+            border: 1px solid var(--border-purple);
+            border-radius: 4px;
+            color: #fff;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--arrow-green);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border-purple);
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: rgba(8, 3, 18, 0.9);
+            margin-top: 3rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero-container, .contact-container {
+                grid-template-columns: 1fr;
+            }
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .hero-text h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvas Flèches Étoiles Filantes Galactiques -->
+    <canvas id="arrow-space-canvas"></canvas>
+    
+    <!-- Voile nébuleuse -->
+    <div class="galaxy-overlay"></div>
+
+    <!-- EN-TÊTE / BARRE DE NAVIGATION -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span>Adrien</span> Cansamy <span class="logo-arrow">➔</span>
+            </div>
+            <ul class="nav-links">
+                <li><button class="nav-btn active" onclick="showPage('accueil')">Présentation</button></li>
+                <li><button class="nav-btn" onclick="showPage('competences')">Compétences</button></li>
+                <li><button class="nav-btn" onclick="showPage('projets')">Projets (3)</button></li>
+                <li><button class="nav-btn" onclick="showPage('veille')">Veille (6)</button></li>
+                <li><button class="nav-btn" onclick="showPage('contact')">Contact</button></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- CONTENU PRINCIPAL MULTI-PAGES (SPA) -->
+    <main>
+
+        <!-- PAGE 1 : PRÉSENTATION & PARCOURS -->
+        <section id="accueil" class="page-section active">
+            <div class="hero-container">
+                <div class="hero-text">
+                    <div class="badge-target">🎯 Cible : Ingénieur en Intelligence Artificielle</div>
+                    <h1>Adrien <span>Cansamy</span></h1>
+                    <div class="hero-subtitle">19 ans • Étudiant BTS SIO</div>
+                    <p class="hero-bio">
+                        Passionné par le développement d'algorithmes et les technologies émergentes. 
+                        Actuellement en formation BTS SIO (Services Informatiques aux Organisations), 
+                        je me spécialise dans la logique logicielle avec l'objectif de poursuivre 
+                        vers un cursus d'Ingénieur en Intelligence Artificielle.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="https://www.linkedin.com/in/adrien-cansamy-998750360/" target="_blank" class="btn-primary">
+                            <span>💼</span> Profil LinkedIn
+                        </a>
+                        <button class="btn-secondary" onclick="showPage('contact')">
+                            <span>✉️</span> Me Contacter
+                        </button>
+                    </div>
+                </div>
+
+                <!-- HUD Viseur Cyber Statut -->
+                <div class="hud-card">
+                    <div class="hud-item">
+                        <div class="hud-label">Âge</div>
+                        <div class="hud-value">19 Ans</div>
+                    </div>
+                    <div class="hud-item">
+                        <div class="hud-label">Formation Actuelle</div>
+                        <div class="hud-value">BTS SIO</div>
+                    </div>
+                    <div class="hud-item">
+                        <div class="hud-label">Spécialisation Visée</div>
+                        <div class="hud-value" style="color: var(--arrow-green);">Ingénierie IA & ML</div>
+                    </div>
+                    <div class="hud-item">
+                        <div class="hud-label">Statut</div>
+                        <div class="hud-value">En recherche d'apprentissage / Stages</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Parcours Scolaire</h2>
+            <div class="card">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">2024 - Présent (En cours)</div>
+                        <div class="timeline-title">BTS SIO (Services Informatiques aux Organisations)</div>
+                        <div class="timeline-desc">
+                            Acquisition des bases solides en développement applicatif, gestion de bases de données, réseaux et administration système.
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Objectif 2026+</div>
+                        <div class="timeline-title">École d'Ingénieur / Master en Intelligence Artificielle</div>
+                        <div class="timeline-desc">
+                            Poursuite d'études spécialisée en Machine Learning, Deep Learning, traitement du langage naturel (NLP) et architecture de données.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 2 : COMPÉTENCES & OUTILS -->
+        <section id="competences" class="page-section">
+            <h2 class="section-title">Compétences Techniques (Exemples)</h2>
+            
+            <div class="grid-2">
+                <!-- COLONNE 1: DÉVELOPPEMENT & DATA -->
+                <div class="card">
+                    <h3 style="color: var(--purple-accent); margin-bottom: 1.5rem;">Développement & Logique</h3>
+                    
+                    <div class="skill-group">
+                        <div class="skill-info">
+                            <span>Python (Algorithmique & Scripting)</span>
+                            <span style="color: var(--arrow-green);">Intermédiaire</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 75%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-group">
+                        <div class="skill-info">
+                            <span>HTML5 / CSS3 / JavaScript (Vanilla)</span>
+                            <span style="color: var(--arrow-green);">Avancé</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 85%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-group">
+                        <div class="skill-info">
+                            <span>SQL & Bases de données (MySQL)</span>
+                            <span style="color: var(--arrow-green);">Intermédiaire</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 70%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-group">
+                        <div class="skill-info">
+                            <span>POO (Programmation Orientée Objet)</span>
+                            <span style="color: var(--arrow-green);">Bases solides</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLONNE 2: OUTILS MAÎTRISÉS -->
+                <div class="card">
+                    <h3 style="color: var(--purple-accent); margin-bottom: 1rem;">Outils & Environnement</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+                        Aperçu des outils manipulés durant le cursus BTS SIO et travaux personnels :
+                    </p>
+
+                    <div class="tools-grid">
+                        <div class="tool-card">
+                            <span class="tool-icon">💻</span>
+                            <strong>VS Code</strong>
+                        </div>
+                        <div class="tool-card">
+                            <span class="tool-icon">🐙</span>
+                            <strong>Git / GitHub</strong>
+                        </div>
+                        <div class="tool-card">
+                            <span class="tool-icon">🐧</span>
+                            <strong>Linux (Bash)</strong>
+                        </div>
+                        <div class="tool-card">
+                            <span class="tool-icon">🐬</span>
+                            <strong>MySQL Workbench</strong>
+                        </div>
+                        <div class="tool-card">
+                            <span class="tool-icon">🌐</span>
+                            <strong>Cisco Packet Tracer</strong>
+                        </div>
+                        <div class="tool-card">
+                            <span class="tool-icon">🐍</span>
+                            <strong>Jupyter Notebook</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 3 : PROJETS FICTIFS -->
+        <section id="projets" class="page-section">
+            <h2 class="section-title">Projets Démonstratifs (3 Projets Fictifs)</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">
+                Exemples de projets illustrant l'orientation vers le développement web et les prémices de la data / IA :
+            </p>
+
+            <div class="grid-3">
+                <!-- PROJET 1 -->
+                <div class="card">
+                    <h3 style="color: #fff; margin-bottom: 0.5rem;">01. PredictModel ML</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">
+                        Module Python expérimental de prédiction statistique de données en utilisant des algorithmes d'apprentissage supervisé basiques.
+                    </p>
+                    <div>
+                        <span class="project-tag">Python</span>
+                        <span class="project-tag">Scikit-Learn</span>
+                        <span class="project-tag">Pandas</span>
+                    </div>
+                </div>
+
+                <!-- PROJET 2 -->
+                <div class="card">
+                    <h3 style="color: #fff; margin-bottom: 0.5rem;">02. Application Gestion SIO</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">
+                        Application web de suivi de parc informatique et gestion d'incidents réalisée dans le cadre de projets d'ateliers BTS.
+                    </p>
+                    <div>
+                        <span class="project-tag">HTML/CSS</span>
+                        <span class="project-tag">JavaScript</span>
+                        <span class="project-tag">SQL</span>
+                    </div>
+                </div>
+
+                <!-- PROJET 3 -->
+                <div class="card">
+               
+École d'Ingénieur / Ma     <h3 style="color: #fff; margin-bottom: 0.5rem;">03. Local NLP Assistant</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">
+                        Script d'interaction local analysant l'intention utilisateur via la recherche de mots-clés et réponses automatisées.
+                    </p>
+                    <div>
+                        <span class="project-tag">Python</span>
+                        <span class="project-tag">Regex</span>
+                        <span class="project-tag">JSON</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 4 : VEILLE TECHNOLOGIQUE -->
+        <section id="veille" class="page-section">
+            <h2 class="section-title">Veille Technologique (6 Sujets Fictifs)</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">
+                Suivi structuré des évolutions du secteur de l'Intelligence Artificielle et du Développement Software :
+            </p>
+
+            <div class="grid-3">
+                <!-- SUJET 1 -->
+                <div class="card">
+                    <div class="veille-card-header">
+                        <span class="veille-num">VEILLE #01</span>
+                        <span style="font-size: 1.2rem;">🧠</span>
+                    </div>
+                    <h3 style="color: #fff; font-size: 1.1rem; margin-bottom: 0.5rem;">LLMs Open-Source & Quantification</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        Étude de l'exécution locale de grands modèles de langage (LLM) réduits en mémoire sans perte majeure de précision.
+                    </p>
+                </div>
+
+                <!-- SUJET 2 -->
+                <div class="card">
+                    <div class="veille-card-header">
+                        <span class="veille-num">VEILLE #02</span>
+                        <span style="font-size: 1.2rem;">📚</span>
+                    </div>
+                    <h3 style="color: #fff; font-size: 1.1rem; margin-bottom: 0.5rem;">Retrieval-Augmented Generation (RAG)</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        Technique connectant des bases de données de connaissances personnalisées aux modèles génératifs d'IA.
+                    </p>
+                </div>
+
+                <!-- SUJET 3 -->
+                <div class="card">
+                    <div class="veille-card-header">
+                        <span class="veille-num">VEILLE #03</span>
+                        <span style="font-size: 1.2rem;">🤖</span>
+                    </div>
+                    <h3 style="color: #fff; font-size: 1.1rem; margin-bottom: 0.5rem;">Agents Autonomes Multi-Tâches</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        Exploration des architectures d'agents capables de planifier, exécuter du code et résoudre des tâches complexes.
+                    </p>
+                </div>
+
+                <!-- SUJET 4 -->
+                <div class="card">
+                    <div class="veille-card-header">
+                        <span class="veille-num">VEILLE #04</span>
+                        <span style="font-size: 1.2rem;">👁️</span>
+                    </div>
+                    <h3 style="color: #fff; font-size: 1.1rem; margin-bottom: 0.5rem;">Vision par Ordinateur (Computer Vision)</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        Progrès des modèles de détection d'objets et de segmentation d'images en temps réel.
+                    </p>
+                </div>
+
+                <!-- SUJET 5 -->
+                <div class="card">
+                    <div class="veille-card-header">
+                        <span class="veille-num">VEILLE #05</span>
+                        <span style="font-size: 1.2rem;">🛡️</span>
+                    </div>
+                    <h3 style="color: #fff; font-size: 1.1rem; margin-bottom: 0.5rem;">Cybersécurité & IA Générative</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        Analyse des menaces liées à l'injection d'invites (Prompt Injection) et protection des pipelines IA.
+                    </p>
+                </div>
+
+                <!-- SUJET 6 -->
+                <div class="card">
+                    <div class="veille-card-header">
+                        <span class="veille-num">VEILLE #06</span>
+                        <span style="font-size: 1.2rem;">🌱</span>
+                    </div>
+                    <h3 style="color: #fff; font-size: 1.1rem; margin-bottom: 0.5rem;">Green AI & Éco-Conception</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        Optimisation de l'empreinte carbone et de la consommation énergétique lors de l'entraînement des modèles.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 5 : CONTACT -->
+        <section id="contact" class="page-section">
+            <h2 class="section-title">Contact</h2>
+
+            <div class="contact-container">
+                <!-- INFOS DIRECTES -->
+                <div>
+                    <div class="card" style="margin-bottom: 1.5rem;">
+                        <h3 style="color: var(--purple-accent); margin-bottom: 1.5rem;">Mes Coordonnées</h3>
+                        
+                        <div class="contact-info-item">
+                            <div class="contact-icon">💼</div>
+                            <div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">LinkedIn</div>
+                                <a href="https://www.linkedin.com/in/adrien-cansamy-998750360/" target="_blank" style="color: var(--arrow-green); text-decoration: none; font-weight: bold;">
+                                    adrien-cansamy-998750360 ➔
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item">
+                            <div class="contact-icon">🎓</div>
+                            <div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">Statut</div>
+                                <div style="color: #fff; font-weight: 500;">Étudiant BTS SIO (19 ans)</div>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item">
+                            <div class="contact-icon">🎯</div>
+                            <div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">Objectif</div>
+                                <div style="color: #fff; font-weight: 500;">Futur Ingénieur en IA</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FORMULAIRE DE CONTACT -->
+                <div class="card">
+                    <h3 style="color: var(--purple-accent); margin-bottom: 1.5rem;">Envoyer un message</h3>
+                    <form id="contact-form" onsubmit="handleFormSubmit(event)">
+                        <div class="form-group">
+                            <label for="name">Votre nom / Entreprise</label>
+                            <input type="text" id="name" class="form-control" placeholder="Ex: Jean Dupont" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Votre adresse e-mail</label>
+                            <input type="email" id="email" class="form-control" placeholder="Ex: nom@exemple.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" class="form-control" placeholder="Écrivez votre message ici..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+                            <span>➔</span> Envoyer le message
+                        </button>
+                    </form>
+                    <div id="form-feedback" style="margin-top: 1rem; display: none; color: var(--arrow-green); text-align: center; font-weight: bold;">
+                        ✓ Message envoyé avec succès !
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- PIED DE PAGE -->
+    <footer>
+        <p>© 2026 Adrien Cansamy - Portfolio BTS SIO | Ambition Ingénieur IA</p>
+    </footer>
+
+    <!-- JAVASCRIPT VANILLA NATIF (SANS FRAMEWORK) -->
+    <script>
+        // 1. GESTION DE LA NAVIGATION MULTI-PAGES (SPA)
+        function showPage(pageId) {
+            // Masquer toutes les sections
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(sec => sec.classList.remove('active'));
+
+            // Réinitialiser les boutons du menu
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => btn.classList.remove('active'));
+
+            // Afficher la section sélectionnée
+            const targetSection = document.getElementById(pageId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+
+            // Mettre en surbrillance le bouton actif
+            const activeBtn = Array.from(navButtons).find(btn => 
+                btn.getAttribute('onclick').includes(pageId)
+            );
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+
+            // Remonter en haut de page
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 2. FORMULAIRE DE CONTACT (SIMULATION INTERACTIVE)
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const feedback = document.getElementById('form-feedback');
+            feedback.style.display = 'block';
+            document.getElementById('contact-form').reset();
+            
+            setTimeout(() => {
+                feedback.style.display = 'none';
+            }, 4000);
+        }
+
+        // 3. ANIMATION DE FOND : FLÈCHES ÉTOILES FILANTES GALACTIQUES (CANVAS PUR)
+        const canvas = document.getElementById('arrow-space-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        // Classe Flèche Filante Galactique
+        class ShootingArrow {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * -height;
+                this.speed = Math.random() * 3 + 2;
+                this.length = Math.random() * 25 + 15;
+                this.size = Math.random() * 8 + 6;
+                this.angle = Math.PI / 4; // Angle de défilement à 45 degrés
+                this.color = Math.random() > 0.3 ? '#a855f7' : '#10b981'; // Violet Saints / Vert Arrow
+                this.opacity = Math.random() * 0.7 + 0.3;
+            }
+
+            update() {
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed;
+
+                if (this.x > width + 50 || this.y > height + 50) {
+                    this.reset();
+                    this.x = Math.random() * (width * 1.5) - (width * 0.5);
+                    this.y = -50;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.globalAlpha = this.opacity;
+
+                // Traînée lumineuse de la flèche
+                let gradient = ctx.createLinearGradient(-this.length, 0, 0, 0);
+                gradient.addColorStop(0, 'transparent');
+                gradient.addColorStop(1, this.color);
+                
+                ctx.strokeStyle = gradient;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(-this.length, 0);
+                ctx.lineTo(0, 0);
+                ctx.stroke();
+
+                // Tête de la flèche (Tête de flèche style Arrow)
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.moveTo(0, -this.size / 2);
+                ctx.lineTo(this.size, 0);
+                ctx.lineTo(0, this.size / 2);
+                ctx.lineTo(this.size / 3, 0);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.restore();
+            }
+        }
+
+        // Création des flèches filantes
+        const arrowsCount = 35;
+        const arrowArray = [];
+        for (let i = 0; i < arrowsCount; i++) {
+            arrowArray.push(new ShootingArrow());
+        }
+
+        // Boucle d'animation
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            arrowArray.forEach(arrow => {
+                arrow.update();
+                arrow.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
